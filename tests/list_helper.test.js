@@ -52,3 +52,31 @@ describe('favorite blog', () => {
     expect(result).toEqual(blogList[1])
   })
 })
+
+describe('most blogs', () => {
+  const blogList = [
+    {
+      title: 'Go To Statement Considered Harmful',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+      likes: 5,
+    },
+    {
+      title: 'Canonical string reduction',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+      likes: 12,
+    },
+    {
+      title: 'First class tests',
+      author: 'Robert C. Martin',
+      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
+      likes: 10,
+    },
+  ]
+
+  test('when list has multiple blogs, return author with the largest amount of blogs', () => {
+    result = listHelper.mostBlogs(blogList)
+    expect(result).toEqual({ author: 'Edsger W. Dijkstra', blogs: 2 })
+  })
+})
