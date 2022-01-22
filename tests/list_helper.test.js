@@ -80,3 +80,31 @@ describe('most blogs', () => {
     expect(result).toEqual({ author: 'Edsger W. Dijkstra', blogs: 2 })
   })
 })
+
+describe('most likes', () => {
+  const blogList = [
+    {
+      title: 'Go To Statement Considered Harmful',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+      likes: 5,
+    },
+    {
+      title: 'Canonical string reduction',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+      likes: 12,
+    },
+    {
+      title: 'First class tests',
+      author: 'Robert C. Martin',
+      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
+      likes: 10,
+    },
+  ]
+
+  test('when list has multiple blogs, return author and authors total likes', () => {
+    result = listHelper.mostLikes(blogList)
+    expect(result).toEqual({ author: 'Edsger W. Dijkstra', likes: 17 })
+  })
+})
