@@ -8,14 +8,11 @@ const Blog = require('../models/blog')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  let blogObject = new Blog(helper.initialBlogs[0])
-  await blogObject.save()
-  blogObject = new Blog(helper.initialBlogs[1])
-  await blogObject.save()
-  blogObject = new Blog(helper.initialBlogs[2])
-  await blogObject.save()
-  blogObject = new Blog(helper.initialBlogs[3])
-  await blogObject.save()
+
+  for (let blog of helper.initialBlogs) {
+    let blogObject = new Blog(blog)
+    await blogObject.save()
+  }
 })
 
 test('blogs are returned as json', async () => {
@@ -99,6 +96,23 @@ test('blog without title is not added', async () => {
   const blogsAtEnd = await helper.blogsInDb()
 
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
+
+test('blog without likes is added with 0 likes', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const newBlog = {
+    title: 'Test blog for 0 likes',
+    author: 'Test blogger',
+    url: 'https://google.com',
+  }
+
+  await api.post('/api/blogs').send(newBlog).expect(200)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  const newestBlog = blogsAtEnd[blogsAtStart.length]
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+  expect(newestBlog.likes).toEqual(0)
 })
 
 afterAll(() => {
