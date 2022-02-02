@@ -1,9 +1,10 @@
 
 POST http://localhost:3001/api/blogs/
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlc3RVc2VyIiwiaWQiOiI2MWY5YzM5NTM5YzA0NzhkYWJkNTYxM2QiLCJpYXQiOjE2NDM4MjMyMjh9.SA6oiyZpVENFA2TEHTuOPUfGXnTxI4bQzzIf1FYIMIA
 
 {
-  "title": "Another blog",
+  "title": "Protected resource blog",
   "author": "Ross",
   "url": "www.google.com",
   "likes": 3,
