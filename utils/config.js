@@ -9,8 +9,11 @@ const MONGODB_URI =
 
 const SECRET = process.env.SECRET
 
+const TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD
+
 module.exports = {
   MONGODB_URI,
   PORT,
   SECRET,
+  TEST_USER_PASSWORD,
 }

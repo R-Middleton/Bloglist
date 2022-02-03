@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
+// TODO: ex4.16 - username and password must be at least 3 characters long + tests
 const userSchema = new mongoose.Schema({
   username: { type: String, unique: true },
   name: String,

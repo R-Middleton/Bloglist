@@ -1,10 +1,15 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const jwt = require('jsonwebtoken')
 const app = require('../app')
 const helper = require('./test_helper')
 const api = supertest(app)
-
+const User = require('../models/user')
 const Blog = require('../models/blog')
+const { config } = require('dotenv')
+const { deleteOne } = require('../models/user')
+
+const globals = {}
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -13,6 +18,13 @@ beforeEach(async () => {
     let blogObject = new Blog(blog)
     await blogObject.save()
   }
+
+  const testUser = {
+    username: 'TestUser',
+    id: '61f9c39539c0478dabd5613d'
+  }
+
+  const token = jwt.sign()
 })
 
 describe('when there is initially some blogs saved', () => {
@@ -68,16 +80,39 @@ describe('viewing a specific blog', () => {
 })
 
 describe('addition of a new blog', () => {
+
+  test('succeeds with new blog saved to db', async () {
+    const newBlog = {
+      title: 'Test Blog',
+      author: 'Ross as test',
+      url: 'www.google.com',
+      likes: 3,
+    }
+    
+    const response = await api
+    .post('/api/blogs')
+    .set('Authorization', globals.token)
+    .set('Content-Type', 'application/json')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', 'application/json')
+
+  })
+
   test('succeeds with valid data', async () => {
     const newBlog = {
       title: 'Test Blog',
-      author: 'Test Blogger',
-      url: 'https://google.com/',
-      likes: 42,
+      author: 'Ross as test',
+      url: 'www.google.com',
+      likes: 3,
     }
+
+    const token =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlc3RVc2VyIiwiaWQiOiI2MWY5YzM5NTM5YzA0NzhkYWJkNTYxM2QiLCJpYXQiOjE2NDM4MjMyMjh9.SA6oiyZpVENFA2TEHTuOPUfGXnTxI4bQzzIf1FYIMIA'
 
     await api
       .post('/api/blogs')
+      .set('Authorization', 'bearer ' + token)
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
