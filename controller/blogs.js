@@ -21,9 +21,7 @@ const getTokenFrom = (request) => {
 blogsRouter.post('/', async (request, response, next) => {
   const body = request.body
 
-  // TODO: ex4.20 - abstract getTokenFrom to middlewear middleware.tokenExtractor
-  const token = getTokenFrom(request)
-  const decodedToken = jwt.verify(token, config.SECRET)
+  const decodedToken = jwt.verify(request.token, config.SECRET)
 
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token missing or invalid' })
