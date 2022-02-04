@@ -116,35 +116,6 @@ describe('addition of a new blog', () => {
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
-    // const response = await api
-    //   .post('/api/blogs')
-    //   .set('Authorization', `bearer ${globals.token}`)
-    //   .set('Content-Type', 'application/json')
-    //   .send(newBlog)
-    //   .expect(201)
-    //   .expect('Content-Type', 'application/json')
-  })
-
-  test('succeeds with valid data', async () => {
-    const newBlog = {
-      title: 'Test Blog',
-      author: 'Ross as test',
-      url: 'www.google.com',
-      likes: 3,
-    }
-
-    const token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlc3RVc2VyIiwiaWQiOiI2MWY5YzM5NTM5YzA0NzhkYWJkNTYxM2QiLCJpYXQiOjE2NDM4MjMyMjh9.SA6oiyZpVENFA2TEHTuOPUfGXnTxI4bQzzIf1FYIMIA'
-
-    await api
-      .post('/api/blogs')
-      .set('Authorization', 'bearer ' + token)
-      .send(newBlog)
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-
-    const blogsAtEnd = await helper.blogsInDb()
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
 
     const titles = blogsAtEnd.map((b) => b.title)
     expect(titles).toContain('Test Blog')
@@ -155,7 +126,12 @@ describe('addition of a new blog', () => {
       author: 'Ross',
     }
 
-    await api.post('/api/blogs/').send(newBlog).expect(400)
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+      .set(headers)
+      .expect('Content-Type', /application\/json/)
 
     const blogsAtEnd = await helper.blogsInDb()
 
@@ -170,7 +146,12 @@ describe('addition of a new blog', () => {
       url: 'https://google.com',
     }
 
-    await api.post('/api/blogs').send(newBlog).expect(200)
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(200)
+      .set(headers)
+      .expect('Content-Type', /application\/json/)
 
     const blogsAtEnd = await helper.blogsInDb()
     const newestBlog = blogsAtEnd[blogsAtStart.length]
