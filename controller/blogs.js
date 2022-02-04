@@ -19,7 +19,6 @@ blogsRouter.post('/', async (request, response, next) => {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
 
-  // TODO: ex4.22 - abstract User.findByID to middleware.userExtractor
   const user = await User.findById(decodedToken.id)
 
   const blog = new Blog({
