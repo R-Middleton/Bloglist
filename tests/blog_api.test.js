@@ -6,8 +6,8 @@ const helper = require('./test_helper')
 const api = supertest(app)
 const User = require('../models/user')
 const Blog = require('../models/blog')
-const { config } = require('dotenv')
 const { deleteOne } = require('../models/user')
+const config = require('../utils/config')
 
 const globals = {}
 
@@ -21,10 +21,11 @@ beforeEach(async () => {
 
   const testUser = {
     username: 'TestUser',
-    id: '61f9c39539c0478dabd5613d'
+    id: '61f9c39539c0478dabd5613d',
   }
 
-  const token = jwt.sign()
+  const token = await jwt.sign(testUser, config.SECRET, { expiresIn: 60 * 60 })
+  globals.token = token
 })
 
 describe('when there is initially some blogs saved', () => {
@@ -80,23 +81,48 @@ describe('viewing a specific blog', () => {
 })
 
 describe('addition of a new blog', () => {
+  let headers
 
-  test('succeeds with new blog saved to db', async () {
+  beforeEach(async () => {
+    const newUser = {
+      username: 'root',
+      name: 'root',
+      password: 'password',
+    }
+
+    await api.post('/api/users').send(newUser)
+
+    const result = await api.post('/api/login').send(newUser)
+
+    headers = {
+      Authorization: `bearer ${result.body.token}`,
+    }
+  })
+
+  test('succeeds with new blog saved to db', async () => {
     const newBlog = {
       title: 'Test Blog',
       author: 'Ross as test',
       url: 'www.google.com',
       likes: 3,
     }
-    
-    const response = await api
-    .post('/api/blogs')
-    .set('Authorization', globals.token)
-    .set('Content-Type', 'application/json')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', 'application/json')
 
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(200)
+      .set(headers)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+    // const response = await api
+    //   .post('/api/blogs')
+    //   .set('Authorization', `bearer ${globals.token}`)
+    //   .set('Content-Type', 'application/json')
+    //   .send(newBlog)
+    //   .expect(201)
+    //   .expect('Content-Type', 'application/json')
   })
 
   test('succeeds with valid data', async () => {

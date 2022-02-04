@@ -21,21 +21,17 @@ const getTokenFrom = (request) => {
 // TODO: ex4.19 - modify so that users identified by token are set as the creator of the blog
 blogsRouter.post('/', async (request, response, next) => {
   const body = request.body
+
   // TODO: ex4.20 - abstract getTokenFrom to middlewear middleware.tokenExtractor
   const token = getTokenFrom(request)
   const decodedToken = jwt.verify(token, config.SECRET)
-  console.log('decodedToken', decodedToken.id)
 
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
 
-  console.log('find user', User.findById(decodedToken.id))
-
   // TODO: ex4.22 - abstract User.findByID to middleware.userExtractor
   const user = await User.findById(decodedToken.id)
-
-  console.log('user id', user.id)
 
   const blog = new Blog({
     title: body.title,
