@@ -18,7 +18,6 @@ const getTokenFrom = (request) => {
   return null
 }
 
-// TODO: ex4.19 - modify so that users identified by token are set as the creator of the blog
 blogsRouter.post('/', async (request, response, next) => {
   const body = request.body
 
